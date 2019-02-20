@@ -1,0 +1,6 @@
+export const GET_DURATION = 'GET_DURATION'
+export const GET_CURRENT_TIME = 'GET_CURRENT_TIME'
+export const GET_BEFFERED = 'GET_BEFFERED'
+export const PLAY_PAUSE = 'PLAY_PAUSE'
+export const CHANGE_PROGRESS = 'CHANGE_PROGRESS'
+export const CHANGE_VOLUME = 'CHANGE_VOLUME'

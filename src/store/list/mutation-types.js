@@ -1,0 +1,6 @@
+export const CHANGE_REPEAT_TYPE = 'CHANGE_REPEAT_TYPE'
+export const PREV_NEXT = 'PREV_NEXT'
+export const CHANGE_MUSIC = 'CHANGE_MUSIC'
+export const DELETE_MUSIC = 'DELETE_MUSIC'
+export const GET_MUSIC_LIST = 'GET_MUSIC_LIST'
+export const SET_LRC = 'SET_LRC'
