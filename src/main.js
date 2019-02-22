@@ -4,7 +4,6 @@ import router from './router'
 import store from './store'
 /* eslint no-new:"off" */
 
-import './rem.js'
 
 new Vue({
   el: '#app',

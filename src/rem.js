@@ -1,4 +1,4 @@
-const baseSize = 32
+const baseSize = 100
 
 const scale = document.documentElement.clientWidth / 750
 
