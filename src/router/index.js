@@ -4,8 +4,10 @@ import Main from '@/views/Main'
 import Header from '@/views/Header'
 
 import NewSong from '@/views/NewSong'
+
 // import TopList from '@/views/TopList'
 const TopList = () => import('@/views/TopList')
+const player = () => import('@/views/player')
 
 Vue.use(Router)
 
@@ -21,6 +23,14 @@ const routes = [
         path: '',
         component: NewSong,
         name: 'newSong',
+      },
+      {
+        path: 'player',
+        component: player,
+        meta: {
+          HaveNoNav: true,
+        },
+        name: 'player',
       },
       {
         path: 'toplist',

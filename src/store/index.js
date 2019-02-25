@@ -1,5 +1,6 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
+import axios from 'axios'
 import player from './player'
 import list from './list'
 
@@ -20,6 +21,31 @@ const store = new Vuex.Store({
   //   },
 
   // },
+  state: {
+    sliders: [],
+    isShowFtPlayer: false,
+  },
+  mutations: {
+    setSliders(state, sliders) {
+      state.sliders = sliders
+    },
+    showFtPlayer(state, isShow) {
+      state.isShowFtPlayer = isShow
+    },
+  },
+  actions: {
+    getSliders({ commit, state }) {
+      if (state.sliders.length <= 0) {
+        return axios.get('/api/getSlider').then((res) => {
+          console.log(res)
+          // this.sliders = res.data.data.slider
+          // state.sliders = res.data.data.slider
+          commit('setSliders', res.data.data.slider)
+        })
+      }
+      return Promise.resolve('')
+    },
+  },
 
   modules: {
     list,

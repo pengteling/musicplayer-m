@@ -20,43 +20,49 @@
     </div>
     <!--end top-hd -->
 
-    <!--start top-nav -->
-    <div
-      id="topNav"
-      class="top-nav"
-    >
-      <ul>
-        <router-link
-          tag="li"
-          :to="{name:'newSong'}"
-        >
-          <a>
-            新歌
-          </a>
-        </router-link>
-        <router-link
-          tag="li"
-          :to="{name:'topList'}"
-        >
-          <a>
-            排行
-          </a>
-        </router-link>
-        <li class="">
-          <a href="http://m.kugou.com/plist/index">
-            歌单
-          </a>
-        </li>
-        <li class="">
-          <a href="http://m.kugou.com/singer/class">
-            歌手
-          </a>
-        </li>
-      </ul>
-    </div>
-    <!--end top-nav -->
+    <Nav v-if="isNav"></Nav>
+    <GoBack v-if="!isNav"></GoBack>
+
+
+    <Mplayer @getError="isError=true"></Mplayer>
+    <Error
+      v-if="isError"
+      @cancel="isError=false"
+    ></Error>
   </div>
 </template>
+<script>
+import Mplayer from '@/components/Mplayer'
+import Error from './Error'
+import Nav from './Nav'
+import GoBack from './goBack'
+
+export default {
+  components: {
+    Mplayer, Error, Nav, GoBack,
+  },
+  data() {
+    return {
+      isError: false,
+      isNav: true,
+    }
+  },
+  watch: {
+    '$route.name': {
+      handler() {
+      // if(val)
+        if (this.$route.meta.HaveNoNav) {
+          this.isNav = false
+        } else {
+          this.isNav = true
+        }
+      },
+      immediate: true,
+    },
+  },
+}
+</script>
+
 <style lang="scss">
 .top-fixed {
     position: fixed;

@@ -12,7 +12,7 @@ export default {
   },
   getList({ commit }) {
     axios.get('/api/list').then((res) => {
-      console.log(res)
+      console.log('list', res)
       const songList = res.data.songlist
       const musicList = songList.map((item) => {
         const songData = item.data
