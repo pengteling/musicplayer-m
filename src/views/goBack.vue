@@ -1,16 +1,27 @@
 <template>
   <div class="top-goback">
     <p class="page-title js-ftSongName">
-      你是爱我的 (Live)
+      {{ currentMusicItem.title }}
     </p>
     <div
       id="hidePlay"
       class="goback"
+      @click="$router.go(-1)"
     >
       <i></i>
     </div>
   </div>
 </template>
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  computed: {
+    ...mapGetters('list', ['currentMusicItem']),
+  },
+}
+</script>
+
 <style lang="scss">
 .top-goback {
   width: 100%;

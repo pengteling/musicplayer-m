@@ -2,6 +2,7 @@
   <div
     id="bd"
     class="bd js-bd-box"
+    :class="{'bd-bottom': isShowFtPlayer }"
   >
     <!-- start 焦点图 -->
     <div class="swiper-container">
@@ -68,7 +69,7 @@ export default {
     ftPlayer,
   },
   computed: {
-    ...mapState(['sliders']),
+    ...mapState(['sliders', 'isShowFtPlayer']),
     ...mapState('list', ['musicList']),
     ...mapState('player', ['paused']),
   },
