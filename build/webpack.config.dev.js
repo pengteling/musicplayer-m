@@ -10,7 +10,7 @@ app.use('/api',apiRoutes)
 
 const config = {
   mode:'development',
-  devtool: 'source-map',
+  devtool: 'cheap-module-inline-source-map',
   devServer:{
     before(){
       app.get('/api/vkey', function(req,res){

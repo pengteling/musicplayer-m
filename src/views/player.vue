@@ -49,7 +49,7 @@
           id="timeshow"
           class="timeshow"
         >
-          00:04
+          {{ currentTimeStr }}
         </div>
         <div
           id="progressWrap"
@@ -69,9 +69,10 @@
             <div
               id="progress"
               class="progress"
-              :style="{width: `${currentPercentAbsoulte}%`}"
+              ref="progress"
+              :style="{width: `${ currentPercent }%`}"
             >
-              <span></span>
+              <span ref="dragBtn"></span>
             </div>
           </div>
         </div>
@@ -79,13 +80,23 @@
           id="time"
           class="time"
         >
-          04:27
+          {{ durationStr }}
         </div>
       </div>
       <div class="play-operate">
-        <i class="btn-prev js-btnPrev"></i>
-        <i class=" js-btnPlayPause      btn-play"></i>
-        <i class="btn-next js-btnNext"></i>
+        <i
+          class="btn-prev js-btnPrev"
+          @click="PREV_NEXT('prev')"
+        ></i>
+        <i
+          class=" js-btnPlayPause"
+          :class="paused?'btn-play':'btn-pause'"
+          @click="PLAY_PAUSE"
+        ></i>
+        <i
+          class="btn-next js-btnNext"
+          @click="PREV_NEXT('next')"
+        ></i>
       </div>
       <div
         class="download-box js-dialog-show"
@@ -101,17 +112,21 @@
   </div>
 </template>
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
-import { parseLrc } from '@/utils'
+import {
+  mapState, mapGetters, mapActions, mapMutations,
+} from 'vuex'
+import { parseLrc,formatTime } from '@/utils'
 
 export default {
   data() {
     return {
       transY: 0,
+      //currentPercent:0,
+      percent:-1
     }
   },
   computed: {
-    ...mapState('player', ['currentTime']),
+    ...mapState('player', ['currentTime','paused','duration']),
     ...mapGetters('list', ['currentMusicItem']),
     ...mapGetters('player', ['currentPercentAbsoulte', 'bufferedPercentAbsoulte']),
     lrc() {
@@ -126,6 +141,20 @@ export default {
       })
       return curli
     },
+    currentTimeStr(){
+      return formatTime(this.currentTime)
+    }
+    ,
+    durationStr(){
+      return formatTime(this.duration)
+    },
+    currentPercent(){
+      if(this.percent>0){
+        return this.percent * 100
+      }else{
+        return this.currentPercentAbsoulte
+      }
+    }
   },
   watch: {
     'currentMusicItem.file'() {
@@ -135,9 +164,12 @@ export default {
     },
     curli(val) {
       if (this.$refs.cur) {
-        console.log(this.$refs.cur)
-        const h = this.$refs.cur[0].offsetTop
-        this.transY = -h /* - this.$refs.cur[0].offsetHeight */
+        // ???
+        this.$nextTick().then(() => {
+          console.log(this.$refs.cur)
+          const h = this.$refs.cur[0].offsetTop
+          this.transY = this.$refs.cur[0].offsetHeight - h
+        })
       }
     },
   },
@@ -149,12 +181,42 @@ export default {
       this.getLrc()
     }
   },
+  mounted(){
+    this.dragInit(this.$refs.dragBtn)
+  },
   methods: {
     ...mapActions('list', ['getLrc', 'getList']),
+    ...mapMutations('player', ['PLAY_PAUSE','CHANGE_PROGRESS']),
+    ...mapMutations('list', ['PREV_NEXT']),
     changeProgress(e) {
       const progress = (e.clientX - this.$refs.progressBar.getBoundingClientRect().left) / this.$refs.progressBar.clientWidth
-      this.$store.commit('player/CHANGE_PROGRESS', progress)
+      //this.$store.commit('player/CHANGE_PROGRESS', progress)
+      this.CHANGE_PROGRESS(progress)
     },
+    dragInit(el){
+      // 
+      el.ontouchstart = e => {
+        e.stopPropagation()
+        console.log(e.touches[0].pageX);
+      }
+      el.ontouchmove = e => {
+        let nowX =  e.pageX || e.touches[0].pageX
+        let startX = this.$refs.progressBar.getBoundingClientRect().left
+        let progressW = this.$refs.progressBar.clientWidth
+        let percent = (nowX - startX ) / progressW 
+        this.$refs.progress.style.width = `${percent * 100}%`
+
+        this.percent = percent
+
+      }
+      el.ontouchend = () => {
+        this.CHANGE_PROGRESS(this.percent)
+
+        //? 进度有跳跃
+        this.percent = -1
+        
+      }
+    }
   },
 }
 </script>
