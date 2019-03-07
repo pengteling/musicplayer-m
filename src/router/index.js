@@ -8,6 +8,7 @@ import NewSong from '@/views/NewSong'
 // import TopList from '@/views/TopList'
 const TopList = () => import('@/views/TopList')
 const player = () => import('@/views/player')
+const List = () => import('@/views/List')
 
 Vue.use(Router)
 
@@ -36,6 +37,14 @@ const routes = [
         path: 'toplist',
         component: TopList,
         name: 'topList',
+      },
+      {
+        path: 'toplist/:id',
+        component: List,
+        name: 'list',
+        meta: {
+          HaveNoNav: true,
+        },
       },
     ],
   },

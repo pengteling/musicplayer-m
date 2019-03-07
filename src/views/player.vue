@@ -68,8 +68,8 @@
             ></div>
             <div
               id="progress"
-              class="progress"
               ref="progress"
+              class="progress"
               :style="{width: `${ currentPercent }%`}"
             >
               <span ref="dragBtn"></span>
@@ -115,18 +115,18 @@
 import {
   mapState, mapGetters, mapActions, mapMutations,
 } from 'vuex'
-import { parseLrc,formatTime } from '@/utils'
+import { parseLrc, formatTime } from '@/utils'
 
 export default {
   data() {
     return {
       transY: 0,
-      //currentPercent:0,
-      percent:-1
+      // currentPercent:0,
+      percent: -1,
     }
   },
   computed: {
-    ...mapState('player', ['currentTime','paused','duration']),
+    ...mapState('player', ['currentTime', 'paused', 'duration']),
     ...mapGetters('list', ['currentMusicItem']),
     ...mapGetters('player', ['currentPercentAbsoulte', 'bufferedPercentAbsoulte']),
     lrc() {
@@ -141,20 +141,18 @@ export default {
       })
       return curli
     },
-    currentTimeStr(){
+    currentTimeStr() {
       return formatTime(this.currentTime)
-    }
-    ,
-    durationStr(){
+    },
+    durationStr() {
       return formatTime(this.duration)
     },
-    currentPercent(){
-      if(this.percent>0){
+    currentPercent() {
+      if (this.percent > 0) {
         return this.percent * 100
-      }else{
-        return this.currentPercentAbsoulte
       }
-    }
+      return this.currentPercentAbsoulte
+    },
   },
   watch: {
     'currentMusicItem.file'() {
@@ -166,7 +164,7 @@ export default {
       if (this.$refs.cur) {
         // ???
         this.$nextTick().then(() => {
-          console.log(this.$refs.cur)
+          // console.log(this.$refs.cur)
           const h = this.$refs.cur[0].offsetTop
           this.transY = this.$refs.cur[0].offsetHeight - h
         })
@@ -181,42 +179,42 @@ export default {
       this.getLrc()
     }
   },
-  mounted(){
+  mounted() {
     this.dragInit(this.$refs.dragBtn)
   },
   methods: {
     ...mapActions('list', ['getLrc', 'getList']),
-    ...mapMutations('player', ['PLAY_PAUSE','CHANGE_PROGRESS']),
+    ...mapMutations('player', ['PLAY_PAUSE', 'CHANGE_PROGRESS']),
     ...mapMutations('list', ['PREV_NEXT']),
     changeProgress(e) {
       const progress = (e.clientX - this.$refs.progressBar.getBoundingClientRect().left) / this.$refs.progressBar.clientWidth
-      //this.$store.commit('player/CHANGE_PROGRESS', progress)
+      // this.$store.commit('player/CHANGE_PROGRESS', progress)
       this.CHANGE_PROGRESS(progress)
     },
-    dragInit(el){
-      // 
-      el.ontouchstart = e => {
+    dragInit(el) {
+      //
+      el.ontouchstart = (e) => {
         e.stopPropagation()
         console.log(e.touches[0].pageX);
       }
-      el.ontouchmove = e => {
-        let nowX =  e.pageX || e.touches[0].pageX
-        let startX = this.$refs.progressBar.getBoundingClientRect().left
-        let progressW = this.$refs.progressBar.clientWidth
-        let percent = (nowX - startX ) / progressW 
+      el.ontouchmove = (e) => {
+        const nowX = e.pageX || e.touches[0].pageX
+        const startX = this.$refs.progressBar.getBoundingClientRect().left
+        const progressW = this.$refs.progressBar.clientWidth
+        const percent = (nowX - startX) / progressW
         this.$refs.progress.style.width = `${percent * 100}%`
 
         this.percent = percent
-
       }
       el.ontouchend = () => {
         this.CHANGE_PROGRESS(this.percent)
 
-        //? 进度有跳跃
-        this.percent = -1
-        
+        // ? 进度有跳跃
+        // this.$nextTick().then(() => {
+        setTimeout(() => { this.percent = -1 }, 500)
+        // })
       }
-    }
+    },
   },
 }
 </script>
