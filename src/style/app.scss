@@ -46,3 +46,31 @@
 .bd-bottom {
   padding-bottom: 4.2143rem;
 }
+.rank-info-hd {
+  width: 100%;
+  // height: 12.5rem;
+  height:9.8rem;
+  position: relative;
+  overflow: hidden;
+}
+.rank-info-hd img {
+  width: 100%;
+}
+.rank-info-time {
+  width: 100%;
+  height: 2.8rem;
+  background: -webkit-linear-gradient(bottom,rgba(0,0,0,.6),rgba(0,0,0,0));
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.rank-info-hd span {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 1.07143rem;
+  color: #fafff2;
+  font-size: .85714rem;
+}
+.bd-top {
+  padding-top: 3.2143rem;
+}

@@ -31,7 +31,7 @@
       class="panel-songslist"
     >
       <li
-        v-for="(item,index) in musicList"
+        v-for="(item,index) in showList"
         :key="index"
         class="panel-songslist-item"
         @click="playSong(item)"
@@ -70,7 +70,7 @@ export default {
   },
   computed: {
     ...mapState(['sliders', 'isShowFtPlayer']),
-    ...mapState('list', ['musicList']),
+    ...mapState('list', ['showList']),
     ...mapState('player', ['paused']),
   },
   created() {
@@ -111,6 +111,7 @@ export default {
     ...mapActions(['getSliders']),
     ...mapActions('list', ['getList']),
     playSong(item) {
+      this.$store.commit('list/GET_MUSIC_LIST')
       this.$store.commit('list/CHANGE_MUSIC', item)
       this.$store.commit('showFtPlayer', true)
       if (this.paused) {

@@ -19,7 +19,6 @@
         >
           <div class="topic_main">
             <span
-              href="javascript:;"
               class="topic_media"
             >
               <img :src="item.picUrl"><span class="listen_count">

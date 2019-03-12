@@ -54,8 +54,11 @@ export default {
       state.currentIndex = 0
     }
   },
-  [types.GET_MUSIC_LIST](state, musicList) {
-    state.musicList = musicList
+  [types.GET_MUSIC_LIST](state) {
+    state.musicList = state.showList
+  },
+  [types.GET_SHOW_LIST](state, musicList) {
+    state.showList = musicList
   },
   [types.SET_LRC](state, payload) {
     // console.log();
