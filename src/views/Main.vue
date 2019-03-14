@@ -1,5 +1,10 @@
 <template>
   <div>
-    <router-view></router-view>
+    <keep-alive
+      include="TopList"
+      :max="2"
+    >
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>

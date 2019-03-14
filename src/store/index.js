@@ -24,6 +24,7 @@ const store = new Vuex.Store({
   state: {
     sliders: [],
     isShowFtPlayer: false,
+    goBackTit: '',
   },
   mutations: {
     setSliders(state, sliders) {
@@ -31,6 +32,9 @@ const store = new Vuex.Store({
     },
     showFtPlayer(state, isShow) {
       state.isShowFtPlayer = isShow
+    },
+    setGoBackTit(state, tit) {
+      state.goBackTit = tit
     },
   },
   actions: {

@@ -1,7 +1,7 @@
 <template>
   <div class="top-goback">
     <p class="page-title js-ftSongName">
-      {{ currentMusicItem.title }}
+      {{ goBackTit }}
     </p>
     <div
       id="hidePlay"
@@ -13,11 +13,11 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters('list', ['currentMusicItem']),
+    ...mapState(['goBackTit']),
   },
 }
 </script>

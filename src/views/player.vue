@@ -160,8 +160,14 @@ export default {
         this.getLrc()
       }
     },
+    'currentMusicItem.title': {
+      handler() {
+        this.$store.commit('setGoBackTit', this.currentMusicItem.title)
+      },
+      immediate: true,
+    },
     curli(val) {
-      if (this.$refs.cur) {
+      if (this.$refs.cur[0]) {
         // ???
         this.$nextTick().then(() => {
           // console.log(this.$refs.cur)
@@ -173,11 +179,15 @@ export default {
   },
   created() {
     if (Object.keys(this.currentMusicItem).length === 0) {
-      this.getList()
+      this.getList().then(() => {
+        this.$store.commit('list/GET_MUSIC_LIST')
+        // this.$store.commit('setGoBackTit', this.currentMusicItem.title)
+      })
     }
     if (this.currentMusicItem.file && !this.currentMusicItem.lrc) {
       this.getLrc()
     }
+    // this.$store.commit('setGoBackTit', this.currentMusicItem.title)
   },
   mounted() {
     this.dragInit(this.$refs.dragBtn)

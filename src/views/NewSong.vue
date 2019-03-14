@@ -65,6 +65,7 @@ export default {
   //   //   sliders: [],
   //   // }
   // },
+  name: 'NewSong',
   components: {
     ftPlayer,
   },

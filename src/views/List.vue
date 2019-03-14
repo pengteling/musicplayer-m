@@ -72,6 +72,8 @@ export default {
     this.getTopList(topId).then((res) => {
       this.updateTime = res.updateTime
       this.topListInfo = res.topListInfo
+      // this.$store.commit('setGoBackTit', this.topListInfo.ListName)
+      this.$store.commit('setGoBackTit', '')
     })
   },
   methods: {

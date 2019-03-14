@@ -37,13 +37,24 @@ export default {
   watch: {
     paused(newVal, oldVal) {
       // console.log('watch paused');
-      this.$nextTick(() => {
-        if (!newVal) {
-          this.audio.play()
+
+      if (!newVal) {
+        if (this.audio.readyState < 2) {
+          this.audio.oncanplay = () => {
+            console.log('play1')
+            this.audio.play()
+          }
         } else {
-          this.audio.pause()
+          console.log('play2')
+          this.audio.play()
         }
-      })
+
+        /* setTimeout(() => {
+          this.audio.play()
+        }, 1000) */
+      } else {
+        this.audio.pause()
+      }
     },
     // 'player.currentTime'(newVal, oldVal) {
     //   console.log(newVal)
