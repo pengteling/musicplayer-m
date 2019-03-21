@@ -71,6 +71,39 @@ export default {
       })
     })
   },
+  getCdlist({ commit }, dissid) {
+    axios.get('/api/getCdlist', {
+      params: {
+        type: 1,
+        json: 1,
+        utf8: 1,
+        onlysong: 0,
+        disstid: dissid,
+        g_tk: 5381,
+        loginUin: 0,
+        hostUin: 0,
+        format: 'json',
+        inCharset: 'utf8',
+        outCharset: 'utf-8',
+        notice: 0,
+        platform: 'yqq.json',
+        needNewCode: 0,
+        // song_begin: 0,
+        // song_num: 200,
+      },
+    }).then((res) => {
+      console.log(res)
+      const songList = res.data.cdlist[0].songlist
+      const musicList = songList.map(item => ({
+        title: item.songname,
+        artist: item.singer.reduce((allsinger, singer) => (allsinger ? `${allsinger}、${singer.name}` : singer.name), ''),
+        cover: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${item.albummid}.jpg`,
+        lrc: '',
+        file: item.songmid,
+      }))
+      commit('GET_SHOW_LIST', musicList)
+    })
+  },
   getUrl({ commit }, songmid) {
     return axios.post('/api/getVkey', {
       req_0: {

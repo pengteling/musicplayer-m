@@ -21,11 +21,14 @@
           排行
         </a>
       </router-link>
-      <li class="">
-        <a href="http://m.kugou.com/plist/index">
+      <router-link
+        tag="li"
+        :to="{name:'plist'}"
+      >
+        <a>
           歌单
         </a>
-      </li>
+      </router-link>
       <li class="">
         <a href="http://m.kugou.com/singer/class">
           歌手

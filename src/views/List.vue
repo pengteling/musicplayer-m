@@ -2,6 +2,7 @@
   <div
     id="bd"
     class="bd bd-top js-bd-box"
+    :class="{'bd-bottom': isShowFtPlayer }"
   >
     <div
       id="imgBoxInfo"
@@ -64,6 +65,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['isShowFtPlayer']),
     ...mapState('list', ['showList']),
     ...mapState('player', ['paused']),
   },

@@ -51,7 +51,30 @@ const config = {
           req.headers.host='c.y.qq.com'
         }
       },
-
+      '/api/getDiss':{
+        target:'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg',
+        changeOrigin:true,
+        pathRewrite:{
+          '^/api/getDiss':''
+        },
+        bypass:function(req,res,proxyOptions){
+          req.headers.referer = 'https://c.y.qq.com',
+          req.headers.host='c.y.qq.com'
+        }
+      },
+      //https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg
+      '/api/getCdlist':{
+        target:'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
+        changeOrigin:true,
+        pathRewrite:{
+          '^/api/getCdlist':''
+        },
+        bypass:function(req,res,proxyOptions){
+          // req.headers.referer = 'https://y.qq.com/n/m/detail/taoge/index.html?ADTAG=myqq&from=myqq&channel=10007100&id=2646688496',
+          req.headers.referer = 'https://y.qq.com/n/yqq/playlist/6811314339.html',
+          req.headers.host='c.y.qq.com'
+        }
+      },
       '/api/getVkey':{
         target:'https://u.y.qq.com/cgi-bin/musicu.fcg',
         changeOrigin:true,

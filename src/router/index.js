@@ -9,6 +9,8 @@ import NewSong from '@/views/NewSong'
 const TopList = () => import('@/views/TopList')
 const player = () => import('@/views/player')
 const List = () => import('@/views/List')
+const plist = () => import('@/views/plist')
+const cdList = () => import('@/views/cdList')
 
 Vue.use(Router)
 
@@ -46,6 +48,19 @@ const routes = [
           HaveNoNav: true,
         },
       },
+      {
+        path: 'plist',
+        component: plist,
+        name: 'plist',
+      },
+      {
+        path: 'cdlist/:id',
+        component: cdList,
+        name: 'cdList',
+        meta: {
+          HaveNoNav: true,
+        },
+      },
     ],
   },
 ]
@@ -54,4 +69,13 @@ export default new Router({
   mode: 'history',
   routes,
   linkExactActiveClass: 'cur',
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    }
+    return {
+      x: 0,
+      y: 0,
+    }
+  },
 })
