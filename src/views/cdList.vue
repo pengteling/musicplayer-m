@@ -8,8 +8,7 @@
       class="img-box"
     >
       <img
-        src="http://imge.kugou.com/soft/collection/400/20190320/20190320185022785761.jpg"
-        onerror="this.onerror=null;this.src='http://m.kugou.com/static/images/index2013/default.png';"
+        :src="pic"
         alt=""
         style="margin-top: -75px;"
       >
@@ -20,11 +19,7 @@
       :class="{'auto':isopen}"
       @click="isopen = !isopen"
     >
-      <p>
-        在古代，弹琴（多指古琴）、弈棋（多指围棋）、书法、绘画是文人骚客（包括一些名门闺秀）修身所必须掌握的技能，故合称琴棋书画。今常以表示个人的文化素养。
-        琴棋书画，歌以咏志，奕以得心，文以载道，画以传情。文传千载，文化可传千载。这是衣冠上国的千年底蕴，亦是炎黄子孙烙印在血脉之上，不变的骄傲。
-        （PS：大师兄报道！）
-        【古风专区】
+      <p v-html="desc">
       </p>
       <div
         id="introShow"
@@ -43,7 +38,7 @@
         v-for="(item,index) in showList"
         :key="index"
         class="panel-songslist-item"
-        onclick="playerModule.playSong(this);"
+        @click="playSong(item)"
       >
         <div class="panel-songs-item-name btn_play">
           <span>{{ item.artist }} - {{ item.title }}</span>
@@ -57,13 +52,19 @@
     </ul>
 
     <!-- end panel-songslist -->
+    <ftPlayer></ftPlayer>
   </div>
 </template>
 <script>
+// eslint-disable-next-line vue/no-v-html
 import axios from 'axios'
 import { mapActions, mapState } from 'vuex'
+import ftPlayer from './ftPlayer'
 
 export default {
+  components: {
+    ftPlayer,
+  },
   data() {
     return {
       isopen: false,
@@ -74,15 +75,29 @@ export default {
   },
   computed: {
     ...mapState('list', ['showList']),
+    ...mapState('player', ['paused']),
   },
   created() {
     // axios.get()
     const dissid = this.$route.params.id
-    this.getCdlist(dissid)
+    this.getCdlist(dissid).then((res) => {
+      console.log(res)
+      this.pic = res.logo
+      this.desc = res.desc
+      // this.$store.commit('setGoBackTit', res.dissname)
+    })
   },
 
   methods: {
     ...mapActions('list', ['getCdlist']),
+    playSong(item) {
+      this.$store.commit('list/GET_MUSIC_LIST')
+      this.$store.commit('list/CHANGE_MUSIC', item)
+      this.$store.commit('showFtPlayer', true)
+      if (this.paused) {
+        this.$store.commit('player/PLAY_PAUSE')
+      }
+    },
   },
 }
 </script>

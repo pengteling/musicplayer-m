@@ -72,7 +72,7 @@ export default {
     })
   },
   getCdlist({ commit }, dissid) {
-    axios.get('/api/getCdlist', {
+    return axios.get('/api/getCdlist', {
       params: {
         type: 1,
         json: 1,
@@ -93,7 +93,12 @@ export default {
       },
     }).then((res) => {
       console.log(res)
-      const songList = res.data.cdlist[0].songlist
+      const cdlist = res.data.cdlist[0]
+      const songList = cdlist.songlist
+      /* const dissname = cdlist.dissname
+      const logo = cdlist.logo
+      const desc = cdlist.desc */
+      const { dissname, logo, desc } = cdlist
       const musicList = songList.map(item => ({
         title: item.songname,
         artist: item.singer.reduce((allsinger, singer) => (allsinger ? `${allsinger}、${singer.name}` : singer.name), ''),
@@ -102,6 +107,8 @@ export default {
         file: item.songmid,
       }))
       commit('GET_SHOW_LIST', musicList)
+      commit('setGoBackTit', dissname, { root: true })
+      return Promise.resolve({ dissname, logo, desc })
     })
   },
   getUrl({ commit }, songmid) {

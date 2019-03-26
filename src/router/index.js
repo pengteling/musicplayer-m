@@ -61,6 +61,11 @@ const routes = [
           HaveNoNav: true,
         },
       },
+      {
+        path: 'search',
+        component: () => import('@/views/Search'),
+        name: 'Search',
+      },
     ],
   },
 ]
