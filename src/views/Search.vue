@@ -38,7 +38,7 @@
       >
         <ul>
           <li
-            v-for="(sokey,index) in historyKeys"
+            v-for="(item,index) in historyKeys"
             :key="index"
           >
             <a
@@ -48,13 +48,13 @@
               <span class="icon iocn_clock"></span>
               <span
                 class="record_con"
-                @click="handlerSearch(sokey)"
+                @click="handlerSearch(item)"
               >
-                {{ sokey }}
+                {{ item }}
               </span>
               <span
                 class="icon icon_close"
-                @click="deleteKeys(sokey)"
+                @click="deleteKeys(item)"
               ></span>
             </a>
           </li>
