@@ -18,7 +18,7 @@
             placeholder="搜索歌曲、歌单、专辑"
             style="-webkit-appearance: textfield;"
             @click="isSearch=true"
-            @keyup.enter="handlerEnter"
+            @keyup.enter="handlerSearch(sokey)"
           >
           <span class="icon icon_search">
             搜索
@@ -59,6 +59,7 @@
             </a>
           </li>
         </ul>
+
         <p
           class="record_handle"
           style
@@ -95,24 +96,40 @@
         </div>
       </div>
       <div
+        v-show="isSearch && !isShowHistory"
         class="mod_search_content"
-        style="display: none;"
       >
-        <ul class="search_content"></ul>
-        <p
-          class="load_complete"
-          style="display: none;"
-        >
-          点击获取更多搜索结果
-        </p>
+        <PullTo @infinite-scroll="loadmore">
+          <ul class="search_content">
+            <li
+              v-for="(item,index) in showList"
+              :key="index"
+            >
+              <i class="icon"></i><h6 class="main_tit">
+                {{ item.title }}
+              </h6><p class="sub_tit">
+                {{ item.artist }}
+              </p>
+            </li>
+          </ul>
+          <div class="ploading">
+            {{ loadEnd ? "已加载全部":"加载中..." }}
+          </div>
+        </PullTo>
       </div>
     </div>
   </div>
 </template>
 <script>
 import axios from 'axios'
+import PullTo from 'vue-pull-to'
+import { mapMutations, mapState } from 'vuex'
+
 
 export default {
+  components: {
+    PullTo,
+  },
   data() {
     return {
       hotKeys: [
@@ -127,7 +144,13 @@ export default {
       isShowHistory: true,
       sokey: '',
       historyKeys: [],
+      loadEnd: false,
+      curPage: 1,
+      isloading: false,
     };
+  },
+  computed: {
+    ...mapState('list', ['showList']),
   },
   watch: {
     sokey(val) {
@@ -142,6 +165,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations('list', ['GET_SHOW_LIST']),
     handlerCancel() {
       this.isSearch = false;
       this.sokey = '';
@@ -171,7 +195,9 @@ export default {
       this.historyKeys = []
       window.localStorage.setItem('historyKeys', '')
     },
+
     search(sokey) {
+      this.isloading = true
       axios.get('/api/getSearch', {
         params: {
           _: 1553777380917,
@@ -197,8 +223,70 @@ export default {
           remoteplace: 'txt.mqq.all',
         },
       }).then((res) => {
+        this.isloading = false
         console.log(res)
+        let resultList = res.data.data.song.list
+        resultList = resultList.map(item => ({
+          title: item.songname,
+          artist: item.singer.reduce((allsinger, singer) => (allsinger ? `${allsinger}、${singer.name}` : singer.name), ''),
+          file: item.songmid,
+          lrc: '',
+          cover: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${item.albummid}.jpg?max_age=2592000`,
+        }))
+
+        this.GET_SHOW_LIST(resultList)
+        if (resultList.length < 20) {
+          this.loadEnd = true
+        }
       })
+    },
+    loadmore() {
+      console.log('loadmore')
+      // isloading防止同时重复请求
+      if (!this.loadEnd && !this.isloading) {
+        this.curPage += 1
+        this.isloading = true
+        axios.get('/api/getSearch', {
+          params: {
+            _: 1553777380917,
+            g_tk: 5381,
+            uin: 0,
+            format: 'json',
+            inCharset: 'utf-8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'h5',
+            needNewCode: 1,
+            w: this.sokey,
+            zhidaqu: 1,
+            catZhida: 1,
+            t: 0,
+            flag: 1,
+            ie: 'utf-8',
+            sem: 1,
+            aggr: 0,
+            perpage: 20,
+            n: 20,
+            p: this.curPage,
+            remoteplace: 'txt.mqq.all',
+          },
+        }).then((res) => {
+          console.log(res)
+          this.isloading = false
+          let resultList = res.data.data.song.list
+          resultList = resultList.map(item => ({
+            title: item.songname,
+            artist: item.singer.reduce((allsinger, singer) => (allsinger ? `${allsinger}、${singer.name}` : singer.name), ''),
+            file: item.songmid,
+            lrc: '',
+            cover: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${item.albummid}.jpg?max_age=2592000`,
+          }))
+          if (resultList.length < 20) {
+            this.loadEnd = true
+          }
+          this.GET_SHOW_LIST(this.showList.concat(resultList))
+        })
+      }
     },
   },
 };
