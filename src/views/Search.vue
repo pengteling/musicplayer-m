@@ -87,9 +87,9 @@
           <a
             v-for="(item,index) in hotKeys"
             :key="index"
-            href="https://y.qq.com/m/act/singer2019/index.html?openinqqmusic=1&amp;ADTAG=myqq"
             class="tag_s"
             :class="{tag_hot:index===0}"
+            @click="handlerSearch(item)"
           >
             {{ item }}
           </a>
@@ -112,8 +112,18 @@
               </p>
             </li>
           </ul>
-          <div class="ploading">
+          <div
+            v-show="showList.length>0 || isloading"
+            class="ploading"
+          >
             {{ loadEnd ? "已加载全部":"加载中..." }}
+          </div>
+
+          <div
+            v-show="isNoResult && !isloading"
+            class="mod_null search"
+          >
+            <h6>无匹配</h6><p>很抱歉，没有找到与“{{ sokey }}”相关的结果。</p>
           </div>
         </PullTo>
       </div>
@@ -147,6 +157,8 @@ export default {
       loadEnd: false,
       curPage: 1,
       isloading: false,
+      totalPage: 1,
+      isNoResult: false,
     };
   },
   computed: {
@@ -157,6 +169,9 @@ export default {
       if (val === '') {
         this.isShowHistory = true
       }
+      /* 改变关键词 清除搜索结果 */
+      this.GET_SHOW_LIST([])
+      this.isNoResult = false
     },
   },
   created() {
@@ -171,6 +186,11 @@ export default {
       this.sokey = '';
     },
     handlerSearch(sokey) {
+      this.loadEnd = false
+      if (!this.isSearch) {
+        this.isSearch = true
+      }
+      this.GET_SHOW_LIST([])
       // const sokey = e.target.value
       this.sokey = sokey // 点击历史记录搜索时要改变输入框的值
       this.isShowHistory = false
@@ -226,6 +246,7 @@ export default {
         this.isloading = false
         console.log(res)
         let resultList = res.data.data.song.list
+        this.totalPage = Math.ceil(res.data.data.song.totalnum / 20)
         resultList = resultList.map(item => ({
           title: item.songname,
           artist: item.singer.reduce((allsinger, singer) => (allsinger ? `${allsinger}、${singer.name}` : singer.name), ''),
@@ -235,8 +256,11 @@ export default {
         }))
 
         this.GET_SHOW_LIST(resultList)
-        if (resultList.length < 20) {
+        if (this.totalPage <= 1) {
           this.loadEnd = true
+        }
+        if (resultList.length === 0) {
+          this.isNoResult = true
         }
       })
     },
@@ -281,7 +305,7 @@ export default {
             lrc: '',
             cover: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${item.albummid}.jpg?max_age=2592000`,
           }))
-          if (resultList.length < 20) {
+          if (this.curPage >= this.totalPage) {
             this.loadEnd = true
           }
           this.GET_SHOW_LIST(this.showList.concat(resultList))
