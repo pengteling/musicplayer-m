@@ -127,7 +127,8 @@ export default {
       console.log(res.data.req_0.data.midurlinfo[0].purl)
       const purl2 = res.data.req_0.data.midurlinfo[0].purl
       if (purl2) {
-        const url = `http://117.34.59.29/amobile.music.tc.qq.com/${purl2}`
+        // const url = `http://117.34.59.29/amobile.music.tc.qq.com/${purl2}`
+        const url = `https://isure.stream.qqmusic.qq.com/${purl2}`
         // this.audio.src = url
         return Promise.resolve(url)
       }
